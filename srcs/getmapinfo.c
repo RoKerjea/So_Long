@@ -62,4 +62,3 @@ void	getmapinfo(t_mapdata *mapdata)
 	searchposition(mapdata);
 	countitems(mapdata);
 }
-

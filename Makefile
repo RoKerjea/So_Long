@@ -1,5 +1,5 @@
 SRCS		= srcs/so_long.c srcs/map_parser.c lib/ft_split.c lib/ft_strjoin.c lib/ft_strlen.c lib/ft_strchr.c
-SRCS		:= $(SRCS) srcs/getmapinfo.c srcs/keyparser.c
+SRCS		:= $(SRCS) srcs/getmapinfo.c srcs/keyparser.c lib/ft_strendcmp.c
 
 HEADER		= include/so_long.h
 RM			= rm -rf

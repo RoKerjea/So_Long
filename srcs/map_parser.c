@@ -125,10 +125,25 @@ char	**map_parser(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		write (1, "Program need 1 argument\n", 24);
+		write (1, "Error\nProgram need 1 argument\n", 30);
+		return (NULL);
+	}
+	if (ft_strendcomp(argv[1], ".ber"))
+	{
+		write (1, "Error\nWrong file as argument\n", 29);
+		return (NULL);
+	}
+	if (open(argv[1], O_DIRECTORY) > 0)
+	{
+		write (1, "Error\nargument is a directory\n", 30);
 		return (NULL);
 	}
 	mapfd = open(argv[1], O_RDONLY);
+	if (mapfd < 0)
+	{
+		write (1, "Error\ncan't open map file\n", 26);
+		return (NULL);
+	}
 	map = readmap(mapfd);
 	if (!map)
 		return (NULL);

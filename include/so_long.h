@@ -23,15 +23,6 @@
 
 # define SQR 64
 
-typedef struct s_data
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}				t_data;
-
 typedef struct s_mapdata
 {
 	char	**map;
@@ -44,19 +35,20 @@ typedef struct s_mapdata
 
 typedef struct s_libwin
 {
-	void	*mlx;
-	void	*win;
-	struct s_mapdata mapdata;
+	void				*mlx;
+	void				*win;
+	struct s_mapdata	mapdata;
 }				t_libwin;
 
-char	**ft_split(char const *s, char c);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	**map_parser(int argc, char **argv);
+char			**ft_split(char const *s, char c);
+char			*ft_strjoin(char const *s1, char const *s2);
+char			**map_parser(int argc, char **argv);
+void			getmapinfo(t_mapdata *mapdata);
+int				keyparser(int keycode, t_libwin *libwin);
+int				wincloser(t_libwin *libwin);
+void			printmapshell(t_mapdata mapdata);
+int				ft_strchr(const char *s, int c);
 unsigned long	ft_strlen(const char *s);
-int	ft_strchr(const char *s, int c);
-void	getmapinfo(t_mapdata *mapdata);
-int	keyparser(int keycode, t_libwin *libwin);
-int	wincloser(t_libwin *libwin);
-void printmapshell(t_mapdata mapdata);
+int				ft_strendcomp(const char *s1, const char *s2);
 
 #endif
