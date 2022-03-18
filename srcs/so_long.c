@@ -12,7 +12,7 @@
 
 #include "../include/so_long.h"
 
-void	makeassetarray(void **assets[6], t_libwin libwin)
+void	makeassetarray(void **assets[5], t_libwin libwin)
 {
 	int	i;
 
@@ -22,10 +22,9 @@ void	makeassetarray(void **assets[6], t_libwin libwin)
 	assets[2] = mlx_xpm_file_to_image(libwin.mlx, "assets/item.xpm", &i, &i);
 	assets[3] = mlx_xpm_file_to_image(libwin.mlx, "assets/exit.xpm", &i, &i);
 	assets[4] = mlx_xpm_file_to_image(libwin.mlx, "assets/start.xpm", &i, &i);
-	assets[5] = mlx_xpm_file_to_image(libwin.mlx, "assets/chara.xpm", &i, &i);
 }
 
-void	writespritetosquare(void **assets[6], t_libwin libwin, int y, int x)
+void	writespritetosquare(void **assets[5], t_libwin libwin, int y, int x)
 {
 	if (libwin.mapdata.map[y][x] == '0')
 		mlx_put_image_to_window(libwin.mlx,
@@ -48,7 +47,7 @@ int	makeimg(t_libwin *libwin)
 {
 	int		x;
 	int		y;
-	void	**assets[6];
+	void	**assets[5];
 
 	y = 0;
 	makeassetarray(assets, *libwin);
@@ -57,7 +56,11 @@ int	makeimg(t_libwin *libwin)
 		x = 0;
 		while (libwin->mapdata.map[y][x])
 		{
-			writespritetosquare(assets, *libwin, y, x);
+			if (libwin->mapdata.map[y][x] != libwin->mapdata.prevmap[y][x])
+			{
+				printf("reecriture du carre %i %i de l\'image\n", y, x);
+				writespritetosquare(assets, *libwin, y, x);
+			}
 			x++;
 		}
 		y++;
@@ -65,45 +68,42 @@ int	makeimg(t_libwin *libwin)
 	return (0);
 }
 
-int	wincloser(t_libwin *libwin)
+int argcheck(int argc, char **argv)
 {
-	mlx_destroy_window(libwin->mlx, libwin->win);
-	exit(0);
-}
-
-/*
-void	printmapshell(t_mapdata mapdata)
-{
-	int	i = 0;
-
-	printf("map received is \n");
-	while (mapdata.map[i])
+	if (argc != 2)
 	{
-		printf("%s\n", mapdata.map[i]);
-		i++;
+		write (1, "Error\nProgram need 1 argument\n", 30);
+		return (0);
 	}
-	printf("map length is %i\n", mapdata.length);
-	printf("map height is %i\n", mapdata.height);
-	printf("map number of items is %i\n", mapdata.itemcount);
-	printf("starting position is x = %i and y = %i\n", mapdata.pos[1], mapdata.pos[0]);
-	printf("number of move done is %i\n", mapdata.movcount);
-}*/
+	if (ft_strendcomp(argv[1], ".ber"))
+	{
+		write (1, "Error\nWrong file as argument\n", 29);
+		return (0);
+	}
+	if (open(argv[1], O_DIRECTORY) > 0)
+	{
+		write (1, "Error\nargument is a directory\n", 30);
+		return (0);
+	}
+	return (1);
+}
 
 int	main(int argc, char **argv)
 {
 	t_libwin	libwin;
-
-	libwin.mapdata.map = map_parser(argc, argv);
-	if (libwin.mapdata.map == NULL)
-		exit(0);
+	if (!argcheck(argc, argv))
+		return(0);
+	libwin.mapdata.map = map_parser(argv);
+	libwin.mapdata.prevmap = map_parser(argv);
+	if (libwin.mapdata.map == NULL || libwin.mapdata.prevmap == NULL)
+		return (0);
 	getmapinfo(&libwin.mapdata);
-	//printmapshell(libwin.mapdata);
+	printmapshell(libwin.mapdata);
 	libwin.mlx = mlx_init();
 	libwin.win = mlx_new_window(libwin.mlx, libwin.mapdata.length * SQR,
 			libwin.mapdata.height * SQR, "...and thanks for the fishes!");
 	makeimg(&libwin);
 	mlx_hook(libwin.win, 2, 1L << 0, keyparser, &libwin);
 	mlx_hook(libwin.win, 17, 1L << 2, wincloser, &libwin);
-	mlx_loop_hook(libwin.mlx, makeimg, &libwin);
 	mlx_loop(libwin.mlx);
 }

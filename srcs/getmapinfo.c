@@ -12,7 +12,7 @@
 
 #include "../include/so_long.h"
 
-void	searchposition(t_mapdata *mapdata)
+int	searchposition(t_mapdata *mapdata)
 {
 	int	x;
 	int	y;
@@ -27,11 +27,13 @@ void	searchposition(t_mapdata *mapdata)
 			{
 				mapdata->pos[0] = y;
 				mapdata->pos[1] = x;
+				return (0);
 			}
 			x++;
 		}
 		y++;
 	}
+	return (0);
 }
 
 void	countitems(t_mapdata *mapdata)
@@ -58,7 +60,21 @@ void	countitems(t_mapdata *mapdata)
 
 void	getmapinfo(t_mapdata *mapdata)
 {
+	int	y;
+	int	x;
+
+	y = 0;
 	mapdata->movcount = 0;
 	searchposition(mapdata);
 	countitems(mapdata);
+	while (mapdata->prevmap[y])
+	{
+		x = 0;
+		while (mapdata->prevmap[y][x])
+		{
+			mapdata->prevmap[y][x] = 'X';
+			x++;
+		}
+		y++;
+	}
 }

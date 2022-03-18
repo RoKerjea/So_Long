@@ -25,12 +25,13 @@
 
 typedef struct s_mapdata
 {
-	char	**map;
-	int		movcount;
-	int		itemcount;
-	int		pos[2];
-	int		length;
-	int		height;
+	char				**map;
+	char				**prevmap;
+	unsigned int		movcount;
+	unsigned int		itemcount;
+	int					pos[2];
+	int					length;
+	int					height;
 }				t_mapdata;
 
 typedef struct s_libwin
@@ -42,7 +43,7 @@ typedef struct s_libwin
 
 char			**ft_split(char const *s, char c);
 char			*ft_strjoin(char const *s1, char const *s2);
-char			**map_parser(int argc, char **argv);
+char			**map_parser(char **argv);
 void			getmapinfo(t_mapdata *mapdata);
 int				keyparser(int keycode, t_libwin *libwin);
 int				wincloser(t_libwin *libwin);
@@ -50,5 +51,10 @@ void			printmapshell(t_mapdata mapdata);
 int				ft_strchr(const char *s, int c);
 unsigned long	ft_strlen(const char *s);
 int				ft_strendcomp(const char *s1, const char *s2);
+int				makeimg(t_libwin *libwin);
+int				ft_putnbr(unsigned int i);
+
+//only for tests! delete later!
+void	printmapshell(t_mapdata mapdata);
 
 #endif

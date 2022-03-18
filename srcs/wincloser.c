@@ -1,41 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   wincloser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rokerjea <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/18 21:51:48 by rokerjea          #+#    #+#             */
-/*   Updated: 2022/03/18 21:51:50 by rokerjea         ###   ########.fr       */
+/*   Created: 2022/03/18 22:46:27 by rokerjea          #+#    #+#             */
+/*   Updated: 2022/03/18 22:46:29 by rokerjea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	ft_freetab(char **tab)
 {
-	int		i;
-	int		j;
-	char	*str;
+	int	i;
 
 	i = 0;
-	j = 0;
-	if (!s1 || !s2)
-		return (NULL);
-	while (s1[i])
+	while (tab[i])
 		i++;
-	while (s2[j])
-		j++;
-	str = malloc(sizeof(char) * (i + j + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i])
-		str[j++] = s1[i++];
-	i = 0;
-	while (s2[i])
-		str[j++] = s2[i++];
-	str[j] = '\0';
-	return (str);
+	while (i > 0)
+	{
+		if (tab[i])
+			free(tab[i]);
+		i--;
+	}
+	free(tab);
+}
+
+int	wincloser(t_libwin *libwin)
+{
+	mlx_destroy_window(libwin->mlx, libwin->win);
+	if (libwin->mapdata.map)
+		ft_freetab(libwin->mapdata.map);
+	if (libwin->mapdata.prevmap)
+	ft_freetab(libwin->mapdata.prevmap);
+	exit(0);
 }

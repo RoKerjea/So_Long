@@ -12,133 +12,84 @@
 
 #include "../include/so_long.h"
 
-int	moveup(t_libwin *libwin, int y, int x)
+int	printmovement(t_libwin *libwin)
 {
-	if (libwin->mapdata.map[y - 1][x] == '1')
-		return (0);
-	if (libwin->mapdata.map[y - 1][x] == 'E' && libwin->mapdata.itemcount > 0)
-		return (0);
-	else if (libwin->mapdata.map[y - 1][x] == 'E'
-		&& libwin->mapdata.itemcount == 0)
-		wincloser(libwin);
-	if (libwin->mapdata.map[y - 1][x] == '0'
-	|| libwin->mapdata.map[y][x + 1] == 'P')
+	write (1, "You moved ", 10);
+	ft_putnbr (libwin->mapdata.movcount);
+	write (1, " times\n", 7);
+	return (0);
+}
+
+void	gameover(t_libwin *libwin)
+{
+	write (1, "Congratulations!\nYou finished the map in ", 41);
+	ft_putnbr (libwin->mapdata.movcount + 1);
+	write (1, " moves!\n", 8);
+	wincloser(libwin);
+}
+
+void	copymaptab(t_libwin *libwin)
+{
+	int	y;
+	int	x;
+
+	y = 0;
+	while (libwin->mapdata.map[y])
 	{
-		libwin->mapdata.map[y - 1][x] = 'P';
-		libwin->mapdata.map[y][x] = '0';
+		x = 0;
+		while (libwin->mapdata.map[y][x])
+		{
+			libwin->mapdata.prevmap[y][x] = libwin->mapdata.map[y][x];
+			x++;
+		}
+		y++;
 	}
-	if (libwin->mapdata.map[y - 1][x] == 'C')
+}
+
+int	move(t_libwin *libwin, int pos[2], int ny, int nx)
+{
+	if ((libwin->mapdata.map[ny][nx] == 'E'
+		&& libwin->mapdata.itemcount > 0) || libwin->mapdata.map[ny][nx] == '1')
+		return (0);
+	else if (libwin->mapdata.map[ny][nx] == 'E'
+		&& libwin->mapdata.itemcount == 0)
+		gameover(libwin);
+	copymaptab(libwin);
+	if (libwin->mapdata.map[ny][nx] == '0'
+		|| libwin->mapdata.map[ny][nx] == 'P')
 	{
-		libwin->mapdata.map[y - 1][x] = 'P';
-		libwin->mapdata.map[y][x] = '0';
+		libwin->mapdata.map[ny][nx] = 'P';
+		libwin->mapdata.map[pos[0]][pos[1]] = '0';
+	}
+	if (libwin->mapdata.map[ny][nx] == 'C')
+	{
+		libwin->mapdata.map[ny][nx] = 'P';
+		libwin->mapdata.map[pos[0]][pos[1]] = '0';
 		libwin->mapdata.itemcount--;
 	}
 	libwin->mapdata.movcount++;
-	libwin->mapdata.pos[0] = y - 1;
-	libwin->mapdata.pos[1] = x;
-	return (1);
-}
-
-int	movedown(t_libwin *libwin, int y, int x)
-{
-	if (libwin->mapdata.map[y + 1][x] == '1')
-		return (0);
-	if (libwin->mapdata.map[y + 1][x] == 'E' && libwin->mapdata.itemcount > 0)
-		return (0);
-	else if (libwin->mapdata.map[y + 1][x] == 'E'
-		&& libwin->mapdata.itemcount == 0)
-		wincloser(libwin);
-	if (libwin->mapdata.map[y + 1][x] == '0'
-		|| libwin->mapdata.map[y][x + 1] == 'P')
-	{
-		libwin->mapdata.map[y + 1][x] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-		libwin->mapdata.movcount++;
-	}
-	if (libwin->mapdata.map[y + 1][x] == 'C')
-	{
-		libwin->mapdata.map[y + 1][x] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-		libwin->mapdata.movcount++;
-		libwin->mapdata.itemcount--;
-	}
-	libwin->mapdata.pos[0] = y + 1;
-	libwin->mapdata.pos[1] = x;
-	return (1);
-}
-
-int	moveleft(t_libwin *libwin, int y, int x)
-{
-	if (libwin->mapdata.map[y][x - 1] == '1')
-		return (0);
-	if (libwin->mapdata.map[y][x - 1] == 'E' && libwin->mapdata.itemcount > 0)
-		return (0);
-	else if (libwin->mapdata.map[y][x - 1] == 'E'
-		&& libwin->mapdata.itemcount == 0)
-		wincloser(libwin);
-	if (libwin->mapdata.map[y][x - 1] == '0'
-		|| libwin->mapdata.map[y][x + 1] == 'P')
-	{
-		libwin->mapdata.map[y][x - 1] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-	}
-	if (libwin->mapdata.map[y][x - 1] == 'C')
-	{
-		libwin->mapdata.map[y][x - 1] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-		libwin->mapdata.itemcount--;
-	}
-	libwin->mapdata.movcount++;
-	libwin->mapdata.pos[0] = y;
-	libwin->mapdata.pos[1] = x - 1;
-	return (1);
-}
-
-int	moveright(t_libwin *libwin, int y, int x)
-{
-	if (libwin->mapdata.map[y][x + 1] == '1')
-		return (0);
-	if (libwin->mapdata.map[y][x + 1] == 'E' && libwin->mapdata.itemcount > 0)
-		return (0);
-	else if (libwin->mapdata.map[y][x + 1] == 'E'
-		&& libwin->mapdata.itemcount == 0)
-		wincloser(libwin);
-	if (libwin->mapdata.map[y][x + 1] == '0'
-		|| libwin->mapdata.map[y][x + 1] == 'P')
-	{
-		libwin->mapdata.map[y][x + 1] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-		libwin->mapdata.movcount++;
-	}
-	if (libwin->mapdata.map[y][x + 1] == 'C')
-	{
-		libwin->mapdata.map[y][x + 1] = 'P';
-		libwin->mapdata.map[y][x] = '0';
-		libwin->mapdata.movcount++;
-		libwin->mapdata.itemcount--;
-	}
-	libwin->mapdata.pos[0] = y;
-	libwin->mapdata.pos[1] = x + 1;
+	makeimg(libwin);
+	printmovement(libwin);
+	libwin->mapdata.pos[0] = ny;
+	libwin->mapdata.pos[1] = nx;
 	return (1);
 }
 
 int	keyparser(int keycode, t_libwin *libwin)
 {
-	int	y;
-	int	x;
+	int	pos[2];
 
-	y = libwin->mapdata.pos[0];
-	x = libwin->mapdata.pos[1];
+	pos[0] = libwin->mapdata.pos[0];
+	pos[1] = libwin->mapdata.pos[1];
 	if (keycode == 13)
-		moveup(libwin, y, x);
+		move(libwin, pos, pos[0] - 1, pos[1]);
 	if (keycode == 1)
-		movedown(libwin, y, x);
+		move(libwin, pos, pos[0] + 1, pos[1]);
 	if (keycode == 0)
-		moveleft(libwin, y, x);
+		move(libwin, pos, pos[0], pos[1] - 1);
 	if (keycode == 2)
-		moveright(libwin, y, x);
+		move(libwin, pos, pos[0], pos[1] + 1);
 	if (keycode == 53)
 		wincloser(libwin);
-	//printmapshell(libwin->mapdata);
 	return (0);
 }

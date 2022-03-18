@@ -118,26 +118,11 @@ int	mapchecker(char **map)
 	return (1);
 }
 
-char	**map_parser(int argc, char **argv)
+char	**map_parser(char **argv)
 {
 	int		mapfd;
 	char	**map;
 
-	if (argc != 2)
-	{
-		write (1, "Error\nProgram need 1 argument\n", 30);
-		return (NULL);
-	}
-	if (ft_strendcomp(argv[1], ".ber"))
-	{
-		write (1, "Error\nWrong file as argument\n", 29);
-		return (NULL);
-	}
-	if (open(argv[1], O_DIRECTORY) > 0)
-	{
-		write (1, "Error\nargument is a directory\n", 30);
-		return (NULL);
-	}
 	mapfd = open(argv[1], O_RDONLY);
 	if (mapfd < 0)
 	{
@@ -149,6 +134,5 @@ char	**map_parser(int argc, char **argv)
 		return (NULL);
 	if (mapchecker(map) == 1)
 		return (map);
-	free (map);
 	return (0);
 }
