@@ -34,6 +34,6 @@ int	wincloser(t_libwin *libwin)
 	if (libwin->mapdata.map)
 		ft_freetab(libwin->mapdata.map);
 	if (libwin->mapdata.prevmap)
-	ft_freetab(libwin->mapdata.prevmap);
+		ft_freetab(libwin->mapdata.prevmap);
 	exit(0);
 }

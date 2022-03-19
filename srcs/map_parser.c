@@ -23,6 +23,8 @@ char	**readmap(int fd)
 	mapline = "\n";
 	count = 1;
 	buffer = (char *)malloc(sizeof(char) * 101);
+	if (!buffer)
+		return (NULL);
 	while (count > 0)
 	{
 		count = read(fd, buffer, 100);
@@ -130,9 +132,10 @@ char	**map_parser(char **argv)
 		return (NULL);
 	}
 	map = readmap(mapfd);
+	close (mapfd);
 	if (!map)
 		return (NULL);
 	if (mapchecker(map) == 1)
 		return (map);
-	return (0);
+	return (NULL);
 }

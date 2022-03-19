@@ -38,6 +38,7 @@ typedef struct s_libwin
 {
 	void				*mlx;
 	void				*win;
+	void				**img[5];
 	struct s_mapdata	mapdata;
 }				t_libwin;
 
