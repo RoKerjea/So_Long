@@ -12,9 +12,9 @@
 
 #include "../include/so_long.h"
 
-void	makeassetarray(t_libwin *libwin)
+int	makeassetarray(t_libwin *libwin)
 {
-	int	i;
+	int i;
 
 	i = SQR;
 	libwin->img[0] = mlx_xpm_file_to_image(libwin->mlx, "img/soil.xpm", &i, &i);
@@ -22,6 +22,14 @@ void	makeassetarray(t_libwin *libwin)
 	libwin->img[2] = mlx_xpm_file_to_image(libwin->mlx, "img/item.xpm", &i, &i);
 	libwin->img[3] = mlx_xpm_file_to_image(libwin->mlx, "img/exit.xpm", &i, &i);
 	libwin->img[4] = mlx_xpm_file_to_image(libwin->mlx, "img/char.xpm", &i, &i);
+	if (libwin->img[0] == NULL || libwin->img[1] == NULL
+		|| libwin->img[2] == NULL || libwin->img[3] == NULL
+		|| libwin->img[4] == NULL)
+		{
+			printf ("gate1\n");
+			return (0);
+		}
+	return (1);
 }
 
 void	writespritetosquare(t_libwin libwin, int y, int x)
@@ -90,42 +98,29 @@ int	argcheck(int argc, char **argv)
 	return (1);
 }
 
-char	**cpymap(char **tab)
-{
-	char	*line;
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = "\n";
-	line = "\n";
-	while (tab[i])
-	{
-		tmp = ft_strjoin(line, "\n");
-		if (!tmp)
-			return (NULL);
-		line = tmp;
-		tmp = ft_strjoin(line, tab[i]);
-		if (!tmp)
-			return (NULL);
-		line = tmp;
-		i++;
-	}
-	return (ft_split(line, '\n'));
-}
-
 int	main(int argc, char **argv)
 {
 	t_libwin	libwin;
+	int i = 0;
 
+	while (i < 5)
+	{
+		libwin.img[i] = NULL;
+		i++;
+	}
 	if (!argcheck(argc, argv))
 		return (0);
 	libwin.mapdata.map = map_parser(argv);
-	libwin.mapdata.prevmap = cpymap(libwin.mapdata.map);
+	if (libwin.mapdata.map != NULL)
+		libwin.mapdata.prevmap = cpymap(libwin.mapdata.map);
 	if (libwin.mapdata.map == NULL || libwin.mapdata.prevmap == NULL)
 		return (0);
 	getmapinfo(&libwin.mapdata);
-	makeassetarray(&libwin);
+	if (makeassetarray(&libwin) == 0)
+	{
+		printf("ceci est un probleme mais gerer corrctement pour le moment\n");
+		wincloser(&libwin);
+	}
 	libwin.mlx = mlx_init();
 	libwin.win = mlx_new_window(libwin.mlx, libwin.mapdata.length * SQR,
 			libwin.mapdata.height * SQR, "...and thanks for the fishes!");
@@ -133,4 +128,5 @@ int	main(int argc, char **argv)
 	mlx_hook(libwin.win, 2, 1L << 0, keyparser, &libwin);
 	mlx_hook(libwin.win, 17, 1L << 2, wincloser, &libwin);
 	mlx_loop(libwin.mlx);
+
 }

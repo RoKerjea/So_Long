@@ -10,9 +10,87 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/so_long.h"
+#include "../include/so_long.h"/*
+int	checkmapline(char *line)
+{
+	int	i;
 
-char	**readmap(int fd)
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] != '0' && line[i] != '1' && line[i] != 'C'
+			&& line[i] != 'E' && line[i] != 'P' && line[i] != '\n')
+		{
+			write (1, "Error\nMap contain unknown character\n", 36);
+			return (0);
+		}
+		if (line[i] == '\n' && line[i + 1] == '\n')
+		{
+			write (1, "Error\nNewline in map x2\n", 24);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}*/
+int	checkmapline(char *line)
+{
+	int	i;
+	int	cep[3];
+
+	cep[0] = 0;
+	cep[1] = 0;
+	cep[2] = 0;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == 'C')
+			cep[0]++;
+		if (line[i] == 'E')
+			cep[1]++;
+		if (line[i] == 'P')
+			cep[2]++;
+		if (line[i] != '0' && line[i] != '1' && line[i] != 'C'
+			&& line[i] != 'E' && line[i] != 'P' && line[i] != '\n')
+			return (write (1, "Error\nMap contain unknown character\n", 36));
+		if (line[i] == '\n' && line[i + 1] == '\n')
+			return (write (1, "Error\nNewline in map x2\n", 24));
+		i++;
+	}
+	if (cep[0] == 0 || cep[1] == 0 || cep[2] == 0)
+		return (write (1, "Error\nMap is missing necessary element\n", 39));
+	return (1);
+}
+/*
+int	mapcontent(char **map)
+{
+	int	y;
+	int	cep[3];
+
+	cep[0] = 0;
+	cep[1] = 0;
+	cep[2] = 0;
+	y = 0;
+	while (map[y])
+	{
+		if (ft_strchr(map[y], 'C') != 0)
+			cep[0]++;
+		if (ft_strchr(map[y], 'E') != 0)
+			cep[1]++;
+		if (ft_strchr(map[y], 'P') != 0)
+			cep[2]++;
+		y++;
+	}
+	if (cep[0] == 0 || cep[1] == 0 | cep[2] == 0)
+	{
+		write (1, "Error\nMap is missing necessary element\n", 39);
+		return (0);
+	}
+	return (1);
+}
+*/
+
+char	*readmap(int fd)
 {
 	char	*mapline;
 	char	*tmp;
@@ -35,7 +113,9 @@ char	**readmap(int fd)
 		mapline = tmp;
 	}
 	free (buffer);
-	return (ft_split(mapline, '\n'));
+	if (checkmapline(mapline) != 1)
+		return (NULL);
+	return (mapline);
 }
 
 int	mapwalled(char **map)
@@ -67,33 +147,6 @@ int	mapwalled(char **map)
 	return (1);
 }
 
-int	mapcontent(char **map)
-{
-	int	y;
-	int	cep[3];
-
-	cep[0] = 0;
-	cep[1] = 0;
-	cep[2] = 0;
-	y = 0;
-	while (map[y])
-	{
-		if (ft_strchr(map[y], 'C') != 0)
-			cep[0]++;
-		if (ft_strchr(map[y], 'E') != 0)
-			cep[1]++;
-		if (ft_strchr(map[y], 'P') != 0)
-			cep[2]++;
-		y++;
-	}
-	if (cep[0] == 0 || cep[1] == 0 | cep[2] == 0)
-	{
-		write (1, "Error\nMap is missing necessary content\n", 39);
-		return (0);
-	}
-	return (1);
-}
-
 int	mapchecker(char **map)
 {
 	int	x;
@@ -115,8 +168,6 @@ int	mapchecker(char **map)
 		write (1, "Error\nMap isn't fully enclosed by walls\n", 40);
 		return (0);
 	}
-	if (mapcontent(map) == 0)
-		return (0);
 	return (1);
 }
 
@@ -124,15 +175,20 @@ char	**map_parser(char **argv)
 {
 	int		mapfd;
 	char	**map;
+	char	*mapline;
 
 	mapfd = open(argv[1], O_RDONLY);
 	if (mapfd < 0)
 	{
-		write (1, "Error\ncan't open map file\n", 26);
+		write (1, "Error\nCan't open map file\n", 26);
 		return (NULL);
 	}
-	map = readmap(mapfd);
+	mapline = readmap(mapfd);
 	close (mapfd);
+	if (!mapline)
+		return (NULL);
+	map = ft_split(mapline, '\n');
+	free (mapline);
 	if (!map)
 		return (NULL);
 	if (mapchecker(map) == 1)

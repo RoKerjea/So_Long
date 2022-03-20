@@ -58,6 +58,30 @@ void	countitems(t_mapdata *mapdata)
 	mapdata->length = x;
 }
 
+char	**cpymap(char **tab)
+{
+	char	*line;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = "\n";
+	line = "\n";
+	while (tab[i])
+	{
+		tmp = ft_strjoin(line, "\n");
+		if (!tmp)
+			return (NULL);
+		line = tmp;
+		tmp = ft_strjoin(line, tab[i]);
+		if (!tmp)
+			return (NULL);
+		line = tmp;
+		i++;
+	}
+	return (ft_split(line, '\n'));
+}
+
 void	getmapinfo(t_mapdata *mapdata)
 {
 	int	y;

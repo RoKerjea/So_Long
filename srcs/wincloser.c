@@ -30,10 +30,28 @@ void	ft_freetab(char **tab)
 
 int	wincloser(t_libwin *libwin)
 {
-	mlx_destroy_window(libwin->mlx, libwin->win);
 	if (libwin->mapdata.map)
+	{
+		printf("freeing libwin->mapdata.map\n");
 		ft_freetab(libwin->mapdata.map);
+	}
 	if (libwin->mapdata.prevmap)
+	{
+		printf("freeing libwin->mapdata.prevmap\n");
 		ft_freetab(libwin->mapdata.prevmap);
+	}
+	int i = 0;
+	while (i < 5)
+	{
+		if (libwin->img[i] != NULL)
+		{
+			printf("destroying img = %d\n", i);
+			mlx_destroy_image(libwin->mlx, libwin->img[i]);
+		}
+		i++;
+	}
+	if (libwin->win != NULL)
+		mlx_destroy_window(libwin->mlx, libwin->win);
+	free(libwin->mlx);
 	exit(0);
 }
