@@ -13,7 +13,7 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include <mlx.h>
+# include "../minilibx-linux/mlx.h"
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
@@ -54,7 +54,7 @@ unsigned long	ft_strlen(const char *s);
 int				ft_strendcomp(const char *s1, const char *s2);
 int				makeimg(t_libwin *libwin);
 int				ft_putnbr(unsigned int i);
-char			**cpymap(char **tab);
+char			*cpymap(char **tab);
 
 //only for tests! delete later!
 void			printmapshell(t_mapdata mapdata);

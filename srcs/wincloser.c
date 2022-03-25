@@ -19,7 +19,7 @@ void	ft_freetab(char **tab)
 	i = 0;
 	while (tab[i])
 		i++;
-	while (i > 0)
+	while (i >= 0)
 	{
 		if (tab[i])
 			free(tab[i]);
@@ -43,15 +43,16 @@ int	wincloser(t_libwin *libwin)
 	int i = 0;
 	while (i < 5)
 	{
-		if (libwin->img[i] != NULL)
+		if (libwin->img[i])
 		{
 			printf("destroying img = %d\n", i);
 			mlx_destroy_image(libwin->mlx, libwin->img[i]);
 		}
 		i++;
 	}
-	if (libwin->win != NULL)
+	if (libwin->win)
 		mlx_destroy_window(libwin->mlx, libwin->win);
+	mlx_destroy_display(libwin->mlx);
 	free(libwin->mlx);
 	exit(0);
 }

@@ -81,6 +81,26 @@ int	keyparser(int keycode, t_libwin *libwin)
 
 	pos[0] = libwin->mapdata.pos[0];
 	pos[1] = libwin->mapdata.pos[1];
+	if (keycode == 119)
+		move(libwin, pos, pos[0] - 1, pos[1]);
+	if (keycode == 115)
+		move(libwin, pos, pos[0] + 1, pos[1]);
+	if (keycode == 97)
+		move(libwin, pos, pos[0], pos[1] - 1);
+	if (keycode == 100)
+		move(libwin, pos, pos[0], pos[1] + 1);
+	if (keycode == 65307)
+		wincloser(libwin);
+	return (0);
+}
+
+/*
+int	keyparser(int keycode, t_libwin *libwin)
+{
+	int	pos[2];
+
+	pos[0] = libwin->mapdata.pos[0];
+	pos[1] = libwin->mapdata.pos[1];
 	if (keycode == 13)
 		move(libwin, pos, pos[0] - 1, pos[1]);
 	if (keycode == 1)
@@ -92,4 +112,4 @@ int	keyparser(int keycode, t_libwin *libwin)
 	if (keycode == 53)
 		wincloser(libwin);
 	return (0);
-}
+}*/

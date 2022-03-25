@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/so_long.h"/*
+#include "../include/so_long.h"
+/*
 int	checkmapline(char *line)
 {
 	int	i;
@@ -108,13 +109,19 @@ char	*readmap(int fd)
 		count = read(fd, buffer, 100);
 		buffer[count] = '\0';
 		tmp = ft_strjoin(mapline, buffer);
+		if (ft_strlen(mapline) > 1)
+			free(mapline);
 		if (!tmp)
 			return (NULL);
-		mapline = tmp;
+		mapline = strdup(tmp);
+		free(tmp);
 	}
 	free (buffer);
 	if (checkmapline(mapline) != 1)
+	{
+		free(mapline);
 		return (NULL);
+	}
 	return (mapline);
 }
 
@@ -149,10 +156,8 @@ int	mapwalled(char **map)
 
 int	mapchecker(char **map)
 {
-	int	x;
 	int	y;
 
-	x = 0;
 	y = 0;
 	while (map[y])
 	{

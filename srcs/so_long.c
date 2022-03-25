@@ -16,17 +16,22 @@ int	makeassetarray(t_libwin *libwin)
 {
 	int i;
 
+	i = 0;
+	while (i < 5)
+	{
+		libwin->img[i] = NULL;
+		i++;
+	}
 	i = SQR;
-	libwin->img[0] = mlx_xpm_file_to_image(libwin->mlx, "img/soil.xpm", &i, &i);
-	libwin->img[1] = mlx_xpm_file_to_image(libwin->mlx, "img/wall.xpm", &i, &i);
-	libwin->img[2] = mlx_xpm_file_to_image(libwin->mlx, "img/item.xpm", &i, &i);
-	libwin->img[3] = mlx_xpm_file_to_image(libwin->mlx, "img/exit.xpm", &i, &i);
-	libwin->img[4] = mlx_xpm_file_to_image(libwin->mlx, "img/char.xpm", &i, &i);
+	libwin->img[0] = mlx_xpm_file_to_image(libwin->mlx, "./img/soil.xpm", &i, &i);
+	libwin->img[1] = mlx_xpm_file_to_image(libwin->mlx, "./img/wall.xpm", &i, &i);
+	libwin->img[2] = mlx_xpm_file_to_image(libwin->mlx, "./img/item.xpm", &i, &i);
+	libwin->img[3] = mlx_xpm_file_to_image(libwin->mlx, "./img/exit.xpm", &i, &i);
+	libwin->img[4] = mlx_xpm_file_to_image(libwin->mlx, "./img/char.xpm", &i, &i);
 	if (libwin->img[0] == NULL || libwin->img[1] == NULL
 		|| libwin->img[2] == NULL || libwin->img[3] == NULL
 		|| libwin->img[4] == NULL)
 		{
-			printf ("gate1\n");
 			return (0);
 		}
 	return (1);
@@ -101,32 +106,28 @@ int	argcheck(int argc, char **argv)
 int	main(int argc, char **argv)
 {
 	t_libwin	libwin;
-	int i = 0;
-
-	while (i < 5)
-	{
-		libwin.img[i] = NULL;
-		i++;
-	}
+	char		*linecpy;
+	
 	if (!argcheck(argc, argv))
 		return (0);
 	libwin.mapdata.map = map_parser(argv);
-	if (libwin.mapdata.map != NULL)
-		libwin.mapdata.prevmap = cpymap(libwin.mapdata.map);
+	linecpy = cpymap(libwin.mapdata.map);
+	libwin.mapdata.prevmap = ft_split(linecpy, '\n');
+	free(linecpy);
 	if (libwin.mapdata.map == NULL || libwin.mapdata.prevmap == NULL)
 		return (0);
 	getmapinfo(&libwin.mapdata);
+	libwin.mlx = mlx_init();
 	if (makeassetarray(&libwin) == 0)
 	{
 		printf("ceci est un probleme mais gerer corrctement pour le moment\n");
 		wincloser(&libwin);
 	}
-	libwin.mlx = mlx_init();
 	libwin.win = mlx_new_window(libwin.mlx, libwin.mapdata.length * SQR,
 			libwin.mapdata.height * SQR, "...and thanks for the fishes!");
+	//printmapshell(libwin.mapdata);
 	makeimg(&libwin);
 	mlx_hook(libwin.win, 2, 1L << 0, keyparser, &libwin);
 	mlx_hook(libwin.win, 17, 1L << 2, wincloser, &libwin);
 	mlx_loop(libwin.mlx);
-
 }
