@@ -55,6 +55,8 @@ int				ft_strendcomp(const char *s1, const char *s2);
 int				makeimg(t_libwin *libwin);
 int				ft_putnbr(unsigned int i);
 char			*cpymap(char **tab);
+char			*ft_strdup(const char *s1);
+void			ft_freetab(char **tab);
 
 //only for tests! delete later!
 void			printmapshell(t_mapdata mapdata);

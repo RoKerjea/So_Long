@@ -74,13 +74,13 @@ char	*cpymap(char **tab)
 			free(line);
 		if (!tmp)
 			return (NULL);
-		line = strdup(tmp);
+		line = ft_strdup(tmp);
 		free (tmp);
 		tmp = ft_strjoin(line, tab[i]);
 		free (line);
 		if (!tmp)
 			return (NULL);
-		line = strdup(tmp);
+		line = ft_strdup(tmp);
 		free (tmp);
 		i++;
 	}
